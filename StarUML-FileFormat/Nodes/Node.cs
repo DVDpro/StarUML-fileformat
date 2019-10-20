@@ -165,6 +165,13 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                     break;
             }
             return result;
-        }        
+        }
+
+        public IEnumerable<TNode> GetChildrenByType<TNode>()
+            where TNode : INode
+        {
+            var typeNode = typeof(TNode);
+            return Children.Where(r => r is TNode).Cast<TNode>();
+        }
     }
 }
