@@ -14,7 +14,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         
         private const string AttributesPropertyName = "attributes";
         
-        public List<INode> Attributes { get; set; }
+        public List<UmlAttributeNode> Attributes { get; set; }
 
         public UmlClassNode(INode parent) : base(NodeTypeName, parent)
         {
@@ -25,10 +25,10 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             base.InitializeFromElement(element);
             if (element.TryGetProperty(AttributesPropertyName, out var attributes))
             {
-                Attributes = new List<INode>();
+                Attributes = new List<UmlAttributeNode>();
                 foreach (var ownedElement in attributes.EnumerateArray())
                 {
-                    var ownedNode = NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
+                    var ownedNode = (UmlAttributeNode)NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
                     Attributes.Add(ownedNode);
                 }
             }

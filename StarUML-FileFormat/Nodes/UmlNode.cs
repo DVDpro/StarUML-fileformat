@@ -28,7 +28,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
             if (element.TryGetProperty(VisibilityPropertyName, out var visibilityProperty))
             {
-                if (Enum.TryParse<UmlNodeVisibility>(visibilityProperty.GetString(), true, out var visibilityResolved))
+                if (EnumHelper<UmlNodeVisibility>.TryParse(visibilityProperty.GetString(), out var visibilityResolved))
                 {
                     Visibility = visibilityResolved;
                 }
@@ -48,7 +48,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
             if (Visibility != null)
             {
-                writer.WriteString(VisibilityPropertyName, Visibility.ToString().ToLowerInvariant());
+                writer.WriteString(VisibilityPropertyName, EnumHelper<UmlNodeVisibility>.ToString(Visibility.Value));
             }            
         }
     }
