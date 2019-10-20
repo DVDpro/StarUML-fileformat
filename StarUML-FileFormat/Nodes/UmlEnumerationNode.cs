@@ -53,6 +53,9 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         {
             get
             {
+                if (Literals == null)
+                    return base.Children;
+
                 return base.Children.Union(Literals);
             }
         }

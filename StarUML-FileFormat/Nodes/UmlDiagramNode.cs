@@ -19,6 +19,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public override void InitializeFromElement(JsonElement element)
         {
             base.InitializeFromElement(element);
+            // TODO: Implement ownedViews
             if (element.TryGetProperty(DefaultDiagramPropertyName, out var defaultDiagramProperty))
             {
                 DefaultDiagram = defaultDiagramProperty.GetBoolean();
@@ -28,6 +29,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public override void Write(Utf8JsonWriter writer)
         {
             base.Write(writer);
+            // TODO: Implement ownedViews
             writer.WriteBoolean(DefaultDiagramPropertyName, DefaultDiagram);
         }
     }

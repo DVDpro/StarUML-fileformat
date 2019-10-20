@@ -71,8 +71,7 @@ namespace DVDpro.StarUML.FileFormat
                 {
                     return reader.ReadToEnd();
                 }
-            }
-            
-        }
+            }            
+        }        
     }
 }

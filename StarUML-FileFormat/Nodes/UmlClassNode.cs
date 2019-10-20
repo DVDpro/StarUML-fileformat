@@ -11,7 +11,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
     public class UmlClassNode : UmlNode
     {
         private const string NodeTypeName = "UMLClass";
-        
+
         private const string AttributesPropertyName = "attributes";
         
         public List<UmlAttributeNode> Attributes { get; set; }
@@ -56,6 +56,8 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         {
             get
             {
+                if (Attributes == null)
+                    return base.Children;
                 return base.Children.Union(Attributes);
             }
         }

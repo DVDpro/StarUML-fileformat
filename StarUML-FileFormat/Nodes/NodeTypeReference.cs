@@ -11,7 +11,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             set
             {
                 _nodeId = value;
-                Name = null;
+                _name = null;
             }
         }
         private string _nodeId;
@@ -40,7 +40,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
             else
             {
-                _nodeId = element.GetString();
+                _name = element.GetString();
             }
         }
 
@@ -50,8 +50,9 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             _nodeId = referencedNode.Id;
         }
 
-        internal void Write(Utf8JsonWriter writer)
+        internal void Write(string propertyName, Utf8JsonWriter writer)
         {
+            writer.WritePropertyName(propertyName);
             if (NodeId != null)
             {
                 writer.WriteStartObject();
@@ -61,6 +62,18 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             else
             {
                 writer.WriteStringValue(Name);
+            }
+        }
+
+        public override string ToString()
+        {
+            if (NodeId != null)
+            {
+                return NodeReference.Name;
+            }
+            else
+            {
+                return Name;
             }
         }
 

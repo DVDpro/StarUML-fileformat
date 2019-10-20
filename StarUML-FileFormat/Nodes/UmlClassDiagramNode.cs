@@ -14,17 +14,5 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public UmlClassDiagramNode(INode parent) : base(NodeTypeName, parent)
         {
         }
-
-        public override void InitializeFromElement(JsonElement element)
-        {
-            base.InitializeFromElement(element);
-            // TODO: Implement ownedViews
-        }
-
-        public override void Write(Utf8JsonWriter writer)
-        {
-            base.Write(writer);
-            // TODO: Implement ownedViews
-        }
     }
 }

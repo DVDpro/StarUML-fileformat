@@ -50,6 +50,6 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 writer.WritePropertyName(VersionPropertyName);
                 writer.WriteStringValue(Version);
             }
-        }        
+        }
     }
 }
