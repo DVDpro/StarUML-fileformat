@@ -26,10 +26,10 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             if (element.TryGetProperty(AttributesPropertyName, out var attributes))
             {
                 Attributes = new List<UmlAttributeNode>();
-                foreach (var ownedElement in attributes.EnumerateArray())
+                foreach (var attrElement in attributes.EnumerateArray())
                 {
-                    var ownedNode = (UmlAttributeNode)NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
-                    Attributes.Add(ownedNode);
+                    var attr = (UmlAttributeNode)NodeFactory.CreateAndInitializeFromElement(this, attrElement);
+                    Attributes.Add(attr);
                 }
             }
         }
