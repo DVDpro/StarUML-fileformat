@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
@@ -14,23 +15,44 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public string Documentation { get; set; }
 
-        public INode Parent { get; set; }
+        public INode Parent { get; }
 
         public string TypeName { get; }
 
-        private const string TypePropertyName = "_type";
+        public List<INode> OwnedElements { get; set; }
+        
+        public ProjectNode Project { get; }
+       
         private const string IdPropertyName = "_id";
+        private const string ParentPropertyName = "_parent";
+        private const string RefPropertyName = "$ref";
         private const string NamePropertyName = "name";
         private const string DocumentationPropertyName = "documentation";
+        private const string OwnedElementsPropertyName = "ownedElements";
 
-        protected Node(string typeName)
+        protected Node(string typeName, INode parent)
         {
             TypeName = typeName;
+            Parent = parent;
+            if (parent != null)
+            {
+                INode cNode = this;
+                do
+                {
+                    if (cNode.Parent == null)
+                    {
+                        Project = (ProjectNode)cNode;
+                        break;
+                    }
+                    cNode = cNode.Parent;
+                }
+                while (cNode != null);
+            }
         }
 
-        internal virtual void InitializeFromElement(JsonElement element)
+        public virtual void InitializeFromElement(JsonElement element)
         {
-            var typeName = element.GetProperty(TypePropertyName).GetString();
+            var typeName = NodeFactory.GetElementType(element);
             if (typeName != TypeName)
             {
                 throw new InvalidOperationException($"Invalid node. Expected {TypeName} but actual is {typeName}.");
@@ -45,24 +67,48 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             {
                 Documentation = docProperty.GetString();
             }
+
+            if (element.TryGetProperty(OwnedElementsPropertyName, out var ownedElements))
+            {
+                OwnedElements = new List<INode>();
+                foreach (var ownedElement in ownedElements.EnumerateArray())
+                {
+                    var ownedNode = NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
+                    OwnedElements.Add(ownedNode);
+                }
+            }            
         }
 
-        internal virtual void Write(Utf8JsonWriter writer)
+        public virtual void Write(Utf8JsonWriter writer)
         {
-            writer.WritePropertyName(TypePropertyName);
-            writer.WriteStringValue(TypeName);
-            writer.WritePropertyName(IdPropertyName);
-            writer.WriteStringValue(Id);
+            writer.WriteString(NodeFactory.TypePropertyName, TypeName);
+            writer.WriteString(IdPropertyName, Id);
             if (Name != null)
             {
-                writer.WritePropertyName(NamePropertyName);
-                writer.WriteStringValue(Name);
+                writer.WriteString(NamePropertyName, Name);
             }
-
+            if (Parent != null)
+            {
+                writer.WritePropertyName(ParentPropertyName);
+                writer.WriteStartObject();
+                writer.WriteString(RefPropertyName, Parent.Id);
+                writer.WriteEndObject();
+            }
+            if (OwnedElements != null)
+            {
+                writer.WritePropertyName(OwnedElementsPropertyName);
+                writer.WriteStartArray();
+                foreach (var node in OwnedElements)
+                {
+                    writer.WriteStartObject();
+                    node.Write(writer);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
+            }
             if (Documentation != null)
             {
-                writer.WritePropertyName(DocumentationPropertyName);
-                writer.WriteStringValue(Documentation);
+                writer.WriteString(DocumentationPropertyName, Documentation);
             }
         }
 
@@ -87,12 +133,38 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public static bool operator ==(Node a, Node b)
         {
-            return a.Id == b.Id;
+            return a?.Id == b?.Id;
         }
 
         public static bool operator !=(Node a, Node b)
         {
-            return a.Id != b.Id;
+            return a?.Id != b?.Id;
         }
+
+        public virtual IEnumerable<INode> Children
+        {
+            get
+            {
+                return OwnedElements;
+            }
+        }
+
+        public INode FindNodeById(string nodeId)
+        {
+            INode result = null;
+            foreach (var ownedNode in Children)
+            {
+                if (ownedNode.Id == nodeId)
+                {
+                    result = ownedNode;
+                    break;
+                }
+
+                result = ownedNode.FindNodeById(nodeId);
+                if (result != null)
+                    break;
+            }
+            return result;
+        }        
     }
 }

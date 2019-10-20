@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace DVDpro.StarUML.FileFormat
 {
-    public class Project
+    public class Project : ProjectNode
     {
-        public ProjectNode Node { get; set; }
 
-        public Project()
+        public Project() : base()
         {
-            Node = new ProjectNode();
         }
-
+                
         public static async Task<Project> LoadAsync(string fileName, CancellationToken cancellationToken = default)
         {
             using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
@@ -31,20 +29,16 @@ namespace DVDpro.StarUML.FileFormat
             {
             };
 
-            var node = new ProjectNode();
+            var proj = new Project();
             using (JsonDocument document = await JsonDocument.ParseAsync(stream, options, cancellationToken))
             {
-                node.InitializeFromElement(document.RootElement);
-            }
-            var proj = new Project();
-            proj.Node = node;
+                proj.InitializeFromElement(document.RootElement);
+            }            
             return proj;
         }
 
         public void Save(string fileName)
         {
-            if (Node == null) throw new InvalidOperationException($"Can't save when {nameof(ProjectNode)} is null.");
-
             using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.CreateNew, System.IO.FileAccess.Write, System.IO.FileShare.None))
             {
                 Save(fs);
@@ -53,8 +47,6 @@ namespace DVDpro.StarUML.FileFormat
 
         public void Save(System.IO.Stream stream)
         {
-            if (Node == null) throw new InvalidOperationException($"Can't save when {nameof(ProjectNode)} is null.");
-
             var options = new JsonWriterOptions
             {
                 Indented = true
@@ -63,9 +55,24 @@ namespace DVDpro.StarUML.FileFormat
             using (var writer = new Utf8JsonWriter(stream, options))
             {
                 writer.WriteStartObject();
-                Node.Write(writer);
+                Write(writer);
                 writer.WriteEndObject();
             }
+        }
+
+        public override string ToString()
+        {
+            using (var memStream = new System.IO.MemoryStream())
+            {
+                Save(memStream);
+                memStream.Flush();
+                memStream.Seek(0, System.IO.SeekOrigin.Begin);
+                using (var reader = new System.IO.StreamReader(memStream, Encoding.UTF8, true))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+            
         }
     }
 }

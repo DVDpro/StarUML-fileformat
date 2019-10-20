@@ -14,12 +14,12 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         private const string StereotypePropertyName = "stereotype";
         private const string VisibilityPropertyName = "visibility";
 
-        protected UmlNode(string typeName) : base(typeName)
+        protected UmlNode(string typeName, INode parent) : base(typeName, parent)
         {
 
         }
 
-        internal override void InitializeFromElement(JsonElement element)
+        public override void InitializeFromElement(JsonElement element)
         {
             base.InitializeFromElement(element);
             if (element.TryGetProperty(StereotypePropertyName, out var stereotypeProperty))
@@ -28,7 +28,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
             if (element.TryGetProperty(VisibilityPropertyName, out var visibilityProperty))
             {
-                if (Enum.TryParse<UmlNodeVisibility>(visibilityProperty.GetString(), true, out var visibilityResolved))
+                if (EnumHelper<UmlNodeVisibility>.TryParse(visibilityProperty.GetString(), out var visibilityResolved))
                 {
                     Visibility = visibilityResolved;
                 }
@@ -39,18 +39,16 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
         }
 
-        internal virtual void Write(Utf8JsonWriter writer)
+        public override void Write(Utf8JsonWriter writer)
         {
             base.Write(writer);
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                writer.WritePropertyName(StereotypePropertyName);
-                writer.WriteStringValue(Stereotype);
+                writer.WriteString(StereotypePropertyName, Stereotype);
             }
             if (Visibility != null)
             {
-                writer.WritePropertyName(VisibilityPropertyName);
-                writer.WriteStringValue(Visibility.ToString().ToLowerInvariant());
+                writer.WriteString(VisibilityPropertyName, EnumHelper<UmlNodeVisibility>.ToString(Visibility.Value));
             }            
         }
     }

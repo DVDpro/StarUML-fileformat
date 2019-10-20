@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
 {
+    [NodeType(NodeTypeName)]
     public class ProjectNode : Node
     {
         private const string NodeTypeName = "Project";
@@ -13,15 +14,15 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public string Author { get; set; }
 
         public string Version { get; set; }
-
+        
         private const string AuthorPropertyName = "author";
         private const string VersionPropertyName = "version";
 
-        public ProjectNode() : base(NodeTypeName)
+        public ProjectNode() : base(NodeTypeName, null)
         {
         }
 
-        internal override void InitializeFromElement(JsonElement element)
+        public override void InitializeFromElement(JsonElement element)
         {
             base.InitializeFromElement(element);
             if (element.TryGetProperty(AuthorPropertyName, out var authorProp))
@@ -35,7 +36,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
         }
 
-        internal override void Write(Utf8JsonWriter writer)
+        public override void Write(Utf8JsonWriter writer)
         {
             base.Write(writer);
             if (Author != null)
@@ -49,6 +50,6 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 writer.WritePropertyName(VersionPropertyName);
                 writer.WriteStringValue(Version);
             }
-        }
+        }        
     }
 }
