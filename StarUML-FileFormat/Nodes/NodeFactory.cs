@@ -34,9 +34,12 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
         }
 
+        public const string TypePropertyName = "_type";
+
         internal static INode Create(string typeName, INode parent)
         {
             LoadNodeTypes();
+
             if (!_typeRegister.TryGetValue(typeName, out var nodeType))
             {
                 throw new NotSupportedException($"Unsupported node type {typeName}");
@@ -46,11 +49,17 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             return node;
         }
 
-        internal static INode CreateAndInitializeFromElement(string typeName, INode parent, JsonElement ownedElement)
+        internal static INode CreateAndInitializeFromElement(INode parent, JsonElement element)
         {
+            var typeName = GetElementType(element);
             var node = Create(typeName, parent);
-            node.InitializeFromElement(ownedElement);
+            node.InitializeFromElement(element);
             return node;
+        }
+
+        public static string GetElementType(JsonElement element)
+        {
+            return element.GetProperty(TypePropertyName).GetString();
         }
     }
 }

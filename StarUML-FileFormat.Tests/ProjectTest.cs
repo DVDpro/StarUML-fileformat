@@ -26,6 +26,7 @@ namespace StarUML_FileFormat.Tests
             project.Node.Version = "1";
 
             var patternProject = await DVDpro.StarUML.FileFormat.Project.LoadAsync(".\\test-project.mdj");
+            patternProject.Node.OwnedElements = null;
             var patternContent = patternProject.ToString();
 
             var newContent = project.ToString();

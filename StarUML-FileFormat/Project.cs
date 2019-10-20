@@ -10,7 +10,7 @@ namespace DVDpro.StarUML.FileFormat
 {
     public class Project
     {
-        public ProjectNode Node { get; set; }
+        public ProjectNode Node { get; private set; }
 
         public Project()
         {

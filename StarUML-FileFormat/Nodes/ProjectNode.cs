@@ -14,7 +14,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public string Author { get; set; }
 
         public string Version { get; set; }
-
+        
         private const string AuthorPropertyName = "author";
         private const string VersionPropertyName = "version";
 

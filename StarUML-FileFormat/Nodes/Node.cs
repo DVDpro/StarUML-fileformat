@@ -21,8 +21,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public List<INode> OwnedElements { get; set; }
         
         public ProjectNode Project { get; }
-
-        private const string TypePropertyName = "_type";
+       
         private const string IdPropertyName = "_id";
         private const string ParentPropertyName = "_parent";
         private const string RefPropertyName = "$ref";
@@ -52,7 +51,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public virtual void InitializeFromElement(JsonElement element)
         {
-            var typeName = element.GetProperty(TypePropertyName).GetString();
+            var typeName = NodeFactory.GetElementType(element);
             if (typeName != TypeName)
             {
                 throw new InvalidOperationException($"Invalid node. Expected {TypeName} but actual is {typeName}.");
@@ -73,8 +72,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 OwnedElements = new List<INode>();
                 foreach (var ownedElement in ownedElements.EnumerateArray())
                 {
-                    typeName = ownedElement.GetProperty(TypePropertyName).GetString();
-                    var ownedNode = NodeFactory.CreateAndInitializeFromElement(typeName, this, ownedElement);
+                    var ownedNode = NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
                     OwnedElements.Add(ownedNode);
                 }
             }            
@@ -82,16 +80,11 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public virtual void Write(Utf8JsonWriter writer)
         {
-            writer.WriteString(TypePropertyName, TypeName);
+            writer.WriteString(NodeFactory.TypePropertyName, TypeName);
             writer.WriteString(IdPropertyName, Id);
             if (Name != null)
             {
                 writer.WriteString(NamePropertyName, Name);
-            }
-
-            if (Documentation != null)
-            {
-                writer.WriteString(DocumentationPropertyName, Documentation);
             }
             if (Parent != null)
             {
@@ -99,6 +92,22 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 writer.WriteStartObject();
                 writer.WriteString(RefPropertyName, Parent.Id);
                 writer.WriteEndObject();
+            }
+            if (OwnedElements != null)
+            {
+                writer.WritePropertyName(OwnedElementsPropertyName);
+                writer.WriteStartArray();
+                foreach (var node in OwnedElements)
+                {
+                    writer.WriteStartObject();
+                    node.Write(writer);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
+            }
+            if (Documentation != null)
+            {
+                writer.WriteString(DocumentationPropertyName, Documentation);
             }
         }
 
