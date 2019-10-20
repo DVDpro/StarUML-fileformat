@@ -14,21 +14,43 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public string Documentation { get; set; }
 
-        public INode Parent { get; set; }
+        public INode Parent { get; }
 
         public string TypeName { get; }
 
+        public List<INode> OwnedElements { get; set; }
+        
+        public ProjectNode Project { get; }
+
         private const string TypePropertyName = "_type";
         private const string IdPropertyName = "_id";
+        private const string ParentPropertyName = "_parent";
+        private const string RefPropertyName = "$ref";
         private const string NamePropertyName = "name";
         private const string DocumentationPropertyName = "documentation";
+        private const string OwnedElementsPropertyName = "ownedElements";
 
-        protected Node(string typeName)
+        protected Node(string typeName, INode parent)
         {
             TypeName = typeName;
+            Parent = parent;
+            if (parent != null)
+            {
+                INode cNode = this;
+                do
+                {
+                    if (cNode.Parent == null)
+                    {
+                        Project = (ProjectNode)cNode;
+                        break;
+                    }
+                    cNode = cNode.Parent;
+                }
+                while (cNode != null);
+            }
         }
 
-        internal virtual void InitializeFromElement(JsonElement element)
+        public virtual void InitializeFromElement(JsonElement element)
         {
             var typeName = element.GetProperty(TypePropertyName).GetString();
             if (typeName != TypeName)
@@ -45,24 +67,38 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             {
                 Documentation = docProperty.GetString();
             }
+
+            if (element.TryGetProperty(OwnedElementsPropertyName, out var ownedElements))
+            {
+                OwnedElements = new List<INode>();
+                foreach (var ownedElement in ownedElements.EnumerateArray())
+                {
+                    typeName = ownedElement.GetProperty(TypePropertyName).GetString();
+                    var ownedNode = NodeFactory.CreateAndInitializeFromElement(typeName, this, ownedElement);
+                    OwnedElements.Add(ownedNode);
+                }
+            }            
         }
 
-        internal virtual void Write(Utf8JsonWriter writer)
+        public virtual void Write(Utf8JsonWriter writer)
         {
-            writer.WritePropertyName(TypePropertyName);
-            writer.WriteStringValue(TypeName);
-            writer.WritePropertyName(IdPropertyName);
-            writer.WriteStringValue(Id);
+            writer.WriteString(TypePropertyName, TypeName);
+            writer.WriteString(IdPropertyName, Id);
             if (Name != null)
             {
-                writer.WritePropertyName(NamePropertyName);
-                writer.WriteStringValue(Name);
+                writer.WriteString(NamePropertyName, Name);
             }
 
             if (Documentation != null)
             {
-                writer.WritePropertyName(DocumentationPropertyName);
-                writer.WriteStringValue(Documentation);
+                writer.WriteString(DocumentationPropertyName, Documentation);
+            }
+            if (Parent != null)
+            {
+                writer.WritePropertyName(ParentPropertyName);
+                writer.WriteStartObject();
+                writer.WriteString(RefPropertyName, Parent.Id);
+                writer.WriteEndObject();
             }
         }
 
@@ -87,12 +123,12 @@ namespace DVDpro.StarUML.FileFormat.Nodes
 
         public static bool operator ==(Node a, Node b)
         {
-            return a.Id == b.Id;
+            return a?.Id == b?.Id;
         }
 
         public static bool operator !=(Node a, Node b)
         {
-            return a.Id != b.Id;
+            return a?.Id != b?.Id;
         }
     }
 }

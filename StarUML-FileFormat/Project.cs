@@ -16,7 +16,7 @@ namespace DVDpro.StarUML.FileFormat
         {
             Node = new ProjectNode();
         }
-
+                
         public static async Task<Project> LoadAsync(string fileName, CancellationToken cancellationToken = default)
         {
             using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
@@ -36,8 +36,10 @@ namespace DVDpro.StarUML.FileFormat
             {
                 node.InitializeFromElement(document.RootElement);
             }
-            var proj = new Project();
-            proj.Node = node;
+            var proj = new Project
+            {
+                Node = node
+            };
             return proj;
         }
 
@@ -66,6 +68,21 @@ namespace DVDpro.StarUML.FileFormat
                 Node.Write(writer);
                 writer.WriteEndObject();
             }
+        }
+
+        public override string ToString()
+        {
+            using (var memStream = new System.IO.MemoryStream())
+            {
+                Save(memStream);
+                memStream.Flush();
+                memStream.Seek(0, System.IO.SeekOrigin.Begin);
+                using (var reader = new System.IO.StreamReader(memStream, Encoding.UTF8, true))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+            
         }
     }
 }
