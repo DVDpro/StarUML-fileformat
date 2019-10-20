@@ -4,6 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>DVDpro.StarUML.FileFormat</RootNamespace>
     <AssemblyName>DVDpro.StarUML.FileFormat</AssemblyName>
+    <Version>0.1.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Read and write StarUML file format out of StartUML tool.</Description>
+    <RepositoryType>GIT</RepositoryType>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DVDpro/StarUML-fileformat</PackageProjectUrl>
+    <PackageReleaseNotes />
   </PropertyGroup>
 
   <ItemGroup>
