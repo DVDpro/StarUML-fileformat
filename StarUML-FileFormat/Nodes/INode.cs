@@ -24,5 +24,9 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         void InitializeFromElement(JsonElement element);
 
         void Write(Utf8JsonWriter writer);
+
+        INode FindNodeById(string nodeId);
+
+        IEnumerable<INode> Children { get; }
     }
 }

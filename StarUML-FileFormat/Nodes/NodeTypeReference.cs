@@ -63,5 +63,19 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 writer.WriteStringValue(Name);
             }
         }
+
+        public bool IsNodeReference
+        {
+            get { return NodeId != null; }
+        }
+
+        public INode NodeReference
+        {
+            get
+            {
+                return OwnerNode.Project.FindNodeById(NodeId);
+            }
+        }
+
     }
 }

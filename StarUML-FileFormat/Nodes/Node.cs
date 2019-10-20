@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
@@ -139,5 +140,31 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         {
             return a?.Id != b?.Id;
         }
+
+        public virtual IEnumerable<INode> Children
+        {
+            get
+            {
+                return OwnedElements;
+            }
+        }
+
+        public INode FindNodeById(string nodeId)
+        {
+            INode result = null;
+            foreach (var ownedNode in Children)
+            {
+                if (ownedNode.Id == nodeId)
+                {
+                    result = ownedNode;
+                    break;
+                }
+
+                result = ownedNode.FindNodeById(nodeId);
+                if (result != null)
+                    break;
+            }
+            return result;
+        }        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
@@ -48,6 +49,14 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                     writer.WriteEndObject();
                 }
                 writer.WriteEndArray();
+            }
+        }
+
+        public override IEnumerable<INode> Children
+        {
+            get
+            {
+                return base.Children.Union(Attributes);
             }
         }
     }
