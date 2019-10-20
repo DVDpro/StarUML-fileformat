@@ -1,10 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace DVDpro.StarUML.FileFormat
+namespace DVDpro.StarUML.FileFormat.Nodes
 {
-    public class Node
+    public abstract class Node : INode
     {
         public string Id { get; set; }
 
@@ -12,9 +14,9 @@ namespace DVDpro.StarUML.FileFormat
 
         public string Documentation { get; set; }
 
-        public Node ParentNode { get; set; }
+        public INode Parent { get; set; }
 
-        private string TypeName { get; }
+        public string TypeName { get; }
 
         private const string TypePropertyName = "_type";
         private const string IdPropertyName = "_id";
@@ -26,20 +28,26 @@ namespace DVDpro.StarUML.FileFormat
             TypeName = typeName;
         }
 
-        protected void InitializeFromElement(System.Text.Json.JsonElement json)
+        internal virtual void InitializeFromElement(JsonElement element)
         {
-            Id = json.GetProperty(IdPropertyName).GetString();
-            if (json.TryGetProperty(NamePropertyName, out var nameProperty))
+            var typeName = element.GetProperty(TypePropertyName).GetString();
+            if (typeName != TypeName)
+            {
+                throw new InvalidOperationException($"Invalid node. Expected {TypeName} but actual is {typeName}.");
+            }
+
+            Id = element.GetProperty(IdPropertyName).GetString();
+            if (element.TryGetProperty(NamePropertyName, out var nameProperty))
             {
                 Name = nameProperty.GetString();
             }
-            if (json.TryGetProperty(DocumentationPropertyName, out var docProperty))
+            if (element.TryGetProperty(DocumentationPropertyName, out var docProperty))
             {
                 Documentation = docProperty.GetString();
             }
         }
 
-        protected virtual void Write(Utf8JsonWriter writer)
+        internal virtual void Write(Utf8JsonWriter writer)
         {
             writer.WritePropertyName(TypePropertyName);
             writer.WriteStringValue(TypeName);
@@ -60,22 +68,31 @@ namespace DVDpro.StarUML.FileFormat
 
         public override string ToString()
         {
-            var options = new JsonWriterOptions
-            {
-                Indented = true
-            };
+            return Id;
+        }
 
-            using (var stream = new MemoryStream())
+        public override bool Equals(object obj)
+        {
+            if (obj is INode node)
             {
-                using (var writer = new Utf8JsonWriter(stream, options))
-                {
-                    writer.WriteStartObject();
-                    this.Write(writer);
-                    writer.WriteEndObject();
-                }
-                string json = Encoding.UTF8.GetString(stream.ToArray());
-                return json;
+                return node.Id == Id;
             }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public static bool operator ==(Node a, Node b)
+        {
+            return a.Id == b.Id;
+        }
+
+        public static bool operator !=(Node a, Node b)
+        {
+            return a.Id != b.Id;
         }
     }
 }
