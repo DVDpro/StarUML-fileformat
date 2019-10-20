@@ -1,62 +1,71 @@
-﻿using System.Text.Json;
+﻿using DVDpro.StarUML.FileFormat.Nodes;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DVDpro.StarUML.FileFormat
 {
-    public class Project : Node
+    public class Project
     {
-        public string Author { get; set; }
+        public ProjectNode Node { get; set; }
 
-        public string Version { get; set; }
-
-        private const string AuthorPropertyName = "author";
-        private const string VersionPropertyName = "version";
-
-        public Project() : base("Project")
+        public Project()
         {
-
+            Node = new ProjectNode();
         }
 
         public static async Task<Project> LoadAsync(string fileName, CancellationToken cancellationToken = default)
+        {
+            using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
+            {
+                return await LoadAsync(fs, cancellationToken);
+            }
+        }
+
+        public static async Task<Project> LoadAsync(System.IO.Stream stream, CancellationToken cancellationToken = default)
         {
             var options = new JsonDocumentOptions
             {
             };
 
-            var node = new Project();
-            using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
-            using (JsonDocument document = await JsonDocument.ParseAsync(fs, options, cancellationToken))
+            var node = new ProjectNode();
+            using (JsonDocument document = await JsonDocument.ParseAsync(stream, options, cancellationToken))
             {
                 node.InitializeFromElement(document.RootElement);
-
-                if (document.RootElement.TryGetProperty(AuthorPropertyName, out var authorProp))
-                {
-                    node.Author = authorProp.GetString();
-                }
-
-                if (document.RootElement.TryGetProperty(VersionPropertyName, out var versionProp))
-                {
-                    node.Version = versionProp.GetString();
-                }
             }
-            return node;
+            var proj = new Project();
+            proj.Node = node;
+            return proj;
         }
 
-        protected override void Write(Utf8JsonWriter writer)
+        public void Save(string fileName)
         {
-            base.Write(writer);
-            if (Author != null)
-            {
-                writer.WritePropertyName(AuthorPropertyName);
-                writer.WriteStringValue(Author);
-            }            
+            if (Node == null) throw new InvalidOperationException($"Can't save when {nameof(ProjectNode)} is null.");
 
-            if (Version != null)
+            using (var fs = System.IO.File.Open(fileName, System.IO.FileMode.CreateNew, System.IO.FileAccess.Write, System.IO.FileShare.None))
             {
-                writer.WritePropertyName(VersionPropertyName);
-                writer.WriteStringValue(Version);
-            }            
+                Save(fs);
+            }
+        }
+
+        public void Save(System.IO.Stream stream)
+        {
+            if (Node == null) throw new InvalidOperationException($"Can't save when {nameof(ProjectNode)} is null.");
+
+            var options = new JsonWriterOptions
+            {
+                Indented = true
+            };
+
+            using (var writer = new Utf8JsonWriter(stream, options))
+            {
+                writer.WriteStartObject();
+                Node.Write(writer);
+                writer.WriteEndObject();
+            }
         }
     }
 }
