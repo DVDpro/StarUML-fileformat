@@ -29,11 +29,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public override void Write(Utf8JsonWriter writer)
         {
             base.Write(writer);
-            if (Type != null)
-            {
-                writer.WritePropertyName(TypePropertyName);
-                Type.Write(writer);
-            }
+            Type?.Write(TypePropertyName, writer);
         }
     }
 }

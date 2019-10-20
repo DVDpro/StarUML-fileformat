@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
@@ -32,6 +33,15 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             if (element.TryGetProperty(End2PropertyName, out var end2Property))
             {
                 End2 = (UmlAssociationEndNode)NodeFactory.CreateAndInitializeFromElement(this, end2Property);
+            }
+        }
+
+        public override IEnumerable<INode> Children
+        {
+            get
+            {
+                var ends = new[] { End1, End2 };
+                return base.Children.Union(ends);
             }
         }
 

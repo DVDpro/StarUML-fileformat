@@ -22,7 +22,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public List<INode> OwnedElements { get; set; }
         
         public ProjectNode Project { get; }
-       
+
         private const string IdPropertyName = "_id";
         private const string ParentPropertyName = "_parent";
         private const string RefPropertyName = "$ref";
@@ -34,20 +34,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         {
             TypeName = typeName;
             Parent = parent;
-            if (parent != null)
-            {
-                INode cNode = this;
-                do
-                {
-                    if (cNode.Parent == null)
-                    {
-                        Project = (ProjectNode)cNode;
-                        break;
-                    }
-                    cNode = cNode.Parent;
-                }
-                while (cNode != null);
-            }
+            Project = TopParent as ProjectNode;
         }
 
         public virtual void InitializeFromElement(JsonElement element)
@@ -145,6 +132,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         {
             get
             {
+                if (OwnedElements == null) return new INode[0];
                 return OwnedElements;
             }
         }
@@ -152,26 +140,75 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public INode FindNodeById(string nodeId)
         {
             INode result = null;
-            foreach (var ownedNode in Children)
+            if (Children == null) return result;
+
+            foreach (var childNode in Children)
             {
-                if (ownedNode.Id == nodeId)
+                if (childNode.Id == nodeId)
                 {
-                    result = ownedNode;
+                    result = childNode;
                     break;
                 }
 
-                result = ownedNode.FindNodeById(nodeId);
+                result = childNode.FindNodeById(nodeId);
                 if (result != null)
                     break;
             }
             return result;
         }
-
+                
         public IEnumerable<TNode> GetChildrenByType<TNode>()
             where TNode : INode
         {
-            var typeNode = typeof(TNode);
+            if (Children == null) return new TNode[0];
+            var typeNode = typeof(TNode);            
             return Children.Where(r => r is TNode).Cast<TNode>();
+        }
+
+        public INode TopParent
+        {
+            get
+            {
+                INode result = null;
+                if (Parent != null)
+                {
+                    INode cNode = this;
+                    do
+                    {
+                        if (cNode.Parent == null)
+                        {
+                            result = cNode;
+                            break;
+                        }
+                        cNode = cNode.Parent;
+                    }
+                    while (cNode != null);
+                }
+                return result;
+            }
+        }
+
+        public Dictionary<string, INode> GetAllNodes()
+        {
+            var result = new Dictionary<string, INode>
+            {
+                { this.Id, this }
+            };
+            foreach (var child in Children)
+            {
+                result.Add(child.Id, child);
+                AddAllChildNodes(child, result);
+            }
+            return result;
+        }
+
+        private void AddAllChildNodes(INode child, Dictionary<string, INode> result)
+        {
+            foreach (var subChild in child.Children)
+            {
+                result.Add(subChild.Id, subChild);
+                AddAllChildNodes(subChild, result);
+            }
         }
     }
 }

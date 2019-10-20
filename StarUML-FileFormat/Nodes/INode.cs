@@ -28,5 +28,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         INode FindNodeById(string nodeId);
 
         IEnumerable<INode> Children { get; }
+
+        Dictionary<string, INode> GetAllNodes();
     }
 }
