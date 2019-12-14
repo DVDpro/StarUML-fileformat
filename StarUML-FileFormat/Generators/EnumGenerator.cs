@@ -26,11 +26,11 @@ namespace DVDpro.StarUML.FileFormat.Generators
 
         public void Generate(CSharpFileStream stream, Nodes.UmlEnumerationNode enumNode)
         {
+            stream.WriteSummary(enumNode.Documentation);
             if (enumNode.Tags.Any(r => r.Name == "Flags"))
             {
                 stream.WriteCodeLine("[Flags]");
             }
-            stream.WriteSummary(enumNode.Documentation);
             stream.WriteCodeLine($"{ConvertVisibility(enumNode.Visibility)} enum {enumNode.Name}");
             using (var enumScope = stream.CreateIndentScope())
             {
@@ -40,8 +40,8 @@ namespace DVDpro.StarUML.FileFormat.Generators
                     var lit = enumNode.Literals[i];
                     var litDelimiter = litCount > i + 1 ? "," : string.Empty;
 
+                    stream.WriteLine(); // This is only for beauty output
                     stream.WriteSummary(lit.Documentation);
-
                     var valueTag = lit.Tags.FirstOrDefault(r => r.Name == "Value");
                     if (valueTag != null)
                     {                        
