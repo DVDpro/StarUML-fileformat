@@ -20,7 +20,9 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         public string TypeName { get; }
 
         public List<INode> OwnedElements { get; set; }
-        
+
+        public List<TagNode> Tags { get; set; }
+
         public ProjectNode Project { get; }
 
         private const string IdPropertyName = "_id";
@@ -29,6 +31,7 @@ namespace DVDpro.StarUML.FileFormat.Nodes
         private const string NamePropertyName = "name";
         private const string DocumentationPropertyName = "documentation";
         private const string OwnedElementsPropertyName = "ownedElements";
+        private const string TagsPropertyName = "tags";
 
         protected Node(string typeName, INode parent)
         {
@@ -63,7 +66,17 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                     var ownedNode = NodeFactory.CreateAndInitializeFromElement(this, ownedElement);
                     OwnedElements.Add(ownedNode);
                 }
-            }            
+            }
+
+            Tags = new List<TagNode>();
+            if (element.TryGetProperty(TagsPropertyName, out var tagElements))
+            {
+                foreach (var tagElement in tagElements.EnumerateArray())
+                {
+                    var tagNode = (TagNode)NodeFactory.CreateAndInitializeFromElement(this, tagElement);
+                    Tags.Add(tagNode);
+                }
+            }
         }
 
         public virtual void Write(Utf8JsonWriter writer)

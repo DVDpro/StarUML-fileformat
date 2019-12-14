@@ -1592,13 +1592,30 @@
 											"height": 13,
 											"text": "Literal1",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLEnumerationLiteralView",
+											"_id": "AAAAAAFvBWgxb6cXqTg=",
+											"_parent": {
+												"$ref": "AAAAAAFt6k8etmP7RiQ="
+											},
+											"model": {
+												"$ref": "AAAAAAFvBWgxYqcO+5w="
+											},
+											"font": "Arial;13;0",
+											"left": 589,
+											"top": 306,
+											"width": 116.34619140625,
+											"height": 13,
+											"text": "Literal2",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 584,
 									"top": 286,
 									"width": 126.34619140625,
-									"height": 23
+									"height": 38
 								}
 							],
 							"font": "Arial;13;0",
@@ -1606,7 +1623,7 @@
 							"left": 584,
 							"top": 248,
 							"width": 126.34619140625,
-							"height": 61,
+							"height": 76,
 							"nameCompartment": {
 								"$ref": "AAAAAAFt6k8etWPy1PU="
 							},
@@ -1650,7 +1667,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 480,
-									"top": 245,
+									"top": 249,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -1671,7 +1688,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 476,
-									"top": 260,
+									"top": 263,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -1692,7 +1709,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 487,
-									"top": 216,
+									"top": 220,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -1712,8 +1729,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 554,
-									"top": 264,
+									"left": 553,
+									"top": 269,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -1734,7 +1751,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 548,
-									"top": 276,
+									"top": 281,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -1755,7 +1772,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 565,
-									"top": 238,
+									"top": 244,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -1776,7 +1793,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 407,
-									"top": 227,
+									"top": 229,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -1795,8 +1812,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 406,
-									"top": 241,
+									"left": 405,
+									"top": 242,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -1816,7 +1833,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 410,
-									"top": 200,
+									"top": 201,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -1861,7 +1878,7 @@
 								"$ref": "AAAAAAFt6k8etWPxxFc="
 							},
 							"lineStyle": 1,
-							"points": "583:262;386:213",
+							"points": "583:268;386:214",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFt6nVuBMo/bXg="
@@ -2728,6 +2745,7 @@
 							}
 						}
 					],
+					"documentation": "Test enum comment\nmultiline",
 					"literals": [
 						{
 							"_type": "UMLEnumerationLiteral",
@@ -2735,7 +2753,28 @@
 							"_parent": {
 								"$ref": "AAAAAAFt6k8X2GPnUHw="
 							},
-							"name": "Literal1"
+							"name": "Literal1",
+							"documentation": "test literal comment",
+							"tags": [
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAFvBQn+kd/Ec2k=",
+									"_parent": {
+										"$ref": "AAAAAAFt6k9Db2RAKp8="
+									},
+									"name": "Value",
+									"kind": "hidden",
+									"value": "0x1"
+								}
+							]
+						},
+						{
+							"_type": "UMLEnumerationLiteral",
+							"_id": "AAAAAAFvBWgxYqcO+5w=",
+							"_parent": {
+								"$ref": "AAAAAAFt6k8X2GPnUHw="
+							},
+							"name": "Literal2"
 						}
 					]
 				},
