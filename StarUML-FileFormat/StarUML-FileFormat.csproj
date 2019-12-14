@@ -8,9 +8,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Read and write StarUML file format out of StartUML tool.</Description>
     <RepositoryType>GIT</RepositoryType>
-    <RepositoryUrl></RepositoryUrl>
+    <RepositoryUrl>https://github.com/DVDpro/StarUML-fileformat.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/DVDpro/StarUML-fileformat</PackageProjectUrl>
     <PackageReleaseNotes>tags node and basic generator support</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
