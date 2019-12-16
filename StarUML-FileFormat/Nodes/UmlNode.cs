@@ -63,6 +63,16 @@ namespace DVDpro.StarUML.FileFormat.Nodes
             }
         }
 
+        
+
+        public IEnumerable<Nodes.UmlInterfaceNode> GetInterfaceRealizationNodes()
+        {
+            foreach (var realizationLink in this.GetChildrenByType<Nodes.UmlInterfaceRealizationNode>())
+            {
+                yield return (Nodes.UmlInterfaceNode)realizationLink.Target.NodeReference;
+            }
+        }
+
         public IEnumerable<Nodes.INode> GetGeneralBaseNodes()
         {
             foreach (var generalLink in this.GetChildrenByType<Nodes.UmlGeneralizationNode>())
