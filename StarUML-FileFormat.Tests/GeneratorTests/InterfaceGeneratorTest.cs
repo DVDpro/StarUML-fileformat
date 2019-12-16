@@ -30,7 +30,7 @@ namespace StarUML_FileFormat.Tests.GeneratorTests
                     }                            
                 }
                 var output = await System.IO.File.ReadAllTextAsync(tmpFile);
-                Assert.Equal("public interface Interface1 : Interface1Base\r\n{\r\n}\r\n", output);                    
+                Assert.Equal("public interface Interface1 : Interface1Base\r\n{\r\n    int InterfaceAttribute { get; }\r\n}\r\n", output);                    
             }
             finally
             {

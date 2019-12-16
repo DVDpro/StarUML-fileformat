@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using DVDpro.StarUML.FileFormat.Nodes;
 
 namespace DVDpro.StarUML.FileFormat.Generators.CSharp
 {
@@ -15,11 +16,17 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
             stream.WriteCodeLine($"{CSharpHelper.ConvertVisibility(interfaceNode.Visibility)} interface {interfaceNode.Name}{baseDeclaration}");
             using (var interScope = stream.CreateIndentScope())
             {
-                foreach (var child in interfaceNode.Children)
+                foreach (var attr in interfaceNode.Attributes)
                 {
-                    
+                    WriteAttributeAsProperty(stream, attr);
                 }
             }
+        }
+
+        private void WriteAttributeAsProperty(CSharpWriter stream, UmlAttributeNode attr)
+        {
+            var propertyGenerator = new PropertyGenerator();
+            propertyGenerator.GenerateForInterface(stream, attr);
         }
     }
 }

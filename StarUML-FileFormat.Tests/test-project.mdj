@@ -2016,6 +2016,24 @@
 									"model": {
 										"$ref": "AAAAAAFt6nWQ1cqbjo8="
 									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFvD72oYqdam5g=",
+											"_parent": {
+												"$ref": "AAAAAAFt6nWQ1sqjmJo="
+											},
+											"model": {
+												"$ref": "AAAAAAFvD72n5qdOjpo="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"width": 192.587890625,
+											"height": 13,
+											"text": "+InterfaceAttribute: int {readOnly}",
+											"horizontalAlignment": 0
+										}
+									],
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -232,
@@ -3093,6 +3111,18 @@
 							"target": {
 								"$ref": "AAAAAAFvD6FqLqTqMtY="
 							}
+						}
+					],
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFvD72n5qdOjpo=",
+							"_parent": {
+								"$ref": "AAAAAAFt6nWQ1cqbjo8="
+							},
+							"name": "InterfaceAttribute",
+							"type": "int",
+							"isReadOnly": true
 						}
 					]
 				},

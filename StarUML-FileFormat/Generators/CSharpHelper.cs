@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DVDpro.StarUML.FileFormat.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,6 +26,18 @@ namespace DVDpro.StarUML.FileFormat.Generators
             }
             while (current != null);
             return nsParts;
+        }
+
+        internal static string ResolveType(UmlAttributeNode attributeNode)
+        {
+            if (attributeNode.Type.IsNodeReference)
+            {
+                return attributeNode.Type.NodeReference.Name;
+            }
+            else
+            {
+                return attributeNode.Type.Name;
+            }
         }
 
         public static string ConvertVisibility(Nodes.UmlNodeVisibility? visibility, bool canBePrivate = false, bool canBeProtected = false)
