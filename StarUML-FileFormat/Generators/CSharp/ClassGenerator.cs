@@ -11,7 +11,7 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
         public void Generate(CSharpWriter stream, Nodes.UmlClassNode classNode, bool asPartial = true)
         {
             stream.WriteSummary(classNode.Documentation);
-            var baseClass = classNode.GetGeneralBaseNodes().SingleOrDefault(r => r is Nodes.UmlClassNode) as Nodes.UmlClassNode;
+            var baseClass = classNode.BaseClass;
             var implInterfaces = classNode.GetInterfaceRealizationNodes().ToList();
 
             var baseNames = new List<string>();
