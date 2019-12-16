@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
 {
-    
-    [NodeType(NodeTypeName)] 
+
+    [NodeType(NodeTypeName)]
     public class UmlClassNode : UmlNode
     {
         private const string NodeTypeName = "UMLClass";
 
         private const string AttributesPropertyName = "attributes";
-        
+
         public List<UmlAttributeNode> Attributes { get; set; }
 
         public UmlClassNode(INode parent) : base(NodeTypeName, parent)
@@ -61,5 +59,30 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 return base.Children.Union(Attributes);
             }
         }
+
+        public UmlClassNode BaseClass
+        {
+            get
+            {
+                var baseClass = GetGeneralBaseNodes().SingleOrDefault();
+                if (baseClass != null)
+                    return (UmlClassNode)baseClass;
+                return null;
+            }
+        }
+
+        public IEnumerable<UmlAssociationEndNode> GetAssociationEnds(bool end1, bool end2)
+        {
+            foreach (UmlAssociationEndNode assocEnd in TopParent.GetAllNodes().Where(r => r.Value is UmlAssociationEndNode).Select(r => r.Value))
+            {
+                if (assocEnd.Reference?.NodeId != Id) continue;
+
+                if (!end1 && assocEnd == assocEnd.ParentAssociation.End1) continue;
+                if (!end2 && assocEnd == assocEnd.ParentAssociation.End2) continue;
+
+                yield return assocEnd;
+            }
+        }
+
     }
 }

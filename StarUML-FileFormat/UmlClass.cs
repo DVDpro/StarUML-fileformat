@@ -5,21 +5,24 @@ using System.Linq;
 
 namespace DVDpro.StarUML.FileFormat
 {
+    [Obsolete("Use Nodes.UmlClassNode instead.", true)]
     public class UmlClass
     {
         public UmlClass(Nodes.UmlClassNode classNode)
         {
             ClassNode = classNode;
 
-            var generalizationNode = classNode.GetChildrenByType<Nodes.UmlGeneralizationNode>().SingleOrDefault();
+            var generalizationNode = classNode.GetGeneralBaseNodes();
             if (generalizationNode != null)
-                BaseClass = new UmlClass((Nodes.UmlClassNode)generalizationNode.Target.NodeReference);
+            {
+                BaseClass = new UmlClass((Nodes.UmlClassNode)generalizationNode);
+            }   
         }
 
         public Nodes.UmlClassNode ClassNode { get; }
 
         public UmlClass BaseClass { get; }
-        
+
         public IEnumerable<Nodes.UmlAssociationEndNode> GetAssociationEnds(bool end1, bool end2)
         {
             foreach (Nodes.UmlAssociationEndNode assocEnd in ClassNode.TopParent.GetAllNodes().Where(r=>r.Value is Nodes.UmlAssociationEndNode).Select(r=>r.Value))
