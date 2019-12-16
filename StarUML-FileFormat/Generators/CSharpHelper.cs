@@ -6,6 +6,27 @@ namespace DVDpro.StarUML.FileFormat.Generators
 {
     public static class CSharpHelper
     {
+        public static List<string> GetNamespaceForNode(Nodes.INode node)
+        {
+            var nsParts = new List<string>();
+            var current = node;
+            do
+            {
+                switch (current)
+                {
+                    case Nodes.UmlModelNode modul:
+                    case Nodes.UmlPackageNode package:
+                    case Nodes.UmlSubsystemNode subsystem:
+                        nsParts.Insert(0, current.Name);
+                        break;
+                }
+
+                current = node.Parent;
+            }
+            while (current != null);
+            return nsParts;
+        }
+
         public static string ConvertVisibility(Nodes.UmlNodeVisibility? visibility, bool canBePrivate = false, bool canBeProtected = false)
         {
             if (visibility == null) return "public";

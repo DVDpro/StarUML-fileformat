@@ -51,5 +51,13 @@ namespace DVDpro.StarUML.FileFormat.Nodes
                 writer.WriteString(VisibilityPropertyName, EnumHelper<UmlNodeVisibility>.ToString(Visibility.Value));
             }            
         }
+
+        public IEnumerable<Nodes.INode> GetGeneralBaseNodes()
+        {
+            foreach (var generalLink in this.GetChildrenByType<Nodes.UmlGeneralizationNode>())
+            {
+                yield return generalLink.Target.NodeReference;
+            }
+        }
     }
 }
