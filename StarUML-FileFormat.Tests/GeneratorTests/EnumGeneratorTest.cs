@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using DVDpro.StarUML.FileFormat.Generators.CSharp;
+using DVDpro.StarUML.FileFormat.Generators;
 
 namespace StarUML_FileFormat.Tests.GeneratorTests
 {
@@ -18,8 +20,8 @@ namespace StarUML_FileFormat.Tests.GeneratorTests
             var tmpFile = System.IO.Path.GetTempFileName();
             try
             {
-                var generator = new DVDpro.StarUML.FileFormat.Generators.EnumGenerator();
-                using (var outStream = new DVDpro.StarUML.FileFormat.Generators.CSharpFileStream(tmpFile))
+                var generator = new EnumGenerator();
+                using (var outStream = new CSharpWriter(tmpFile))
                 {
                     foreach (var model in project.GetChildrenByType<DVDpro.StarUML.FileFormat.Nodes.UmlModelNode>())
                     {
@@ -28,7 +30,7 @@ namespace StarUML_FileFormat.Tests.GeneratorTests
                     }                            
                 }
                 var output = await System.IO.File.ReadAllTextAsync(tmpFile);
-                Assert.Equal("/// <summary>\r\n/// Test enum comment\r\n/// multiline\r\n/// </summary>\r\npublic enum MasterEnum\r\n{\r\n    /// <summary>\r\n    /// test literal comment\r\n    /// </summary>\r\n    Literal1 = 0x1,\r\n    Literal2\r\n}\r\n", output);                    
+                Assert.Equal("/// <summary>\r\n/// Test enum comment\r\n/// multiline\r\n/// </summary>\r\npublic enum MasterEnum\r\n{\r\n    /// <summary>test literal comment</summary>\r\n    Literal1 = 0x1,\r\n\r\n    Literal2\r\n}\r\n", output);                    
             }
             finally
             {
