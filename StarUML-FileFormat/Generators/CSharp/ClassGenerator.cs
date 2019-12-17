@@ -25,9 +25,13 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
             stream.WriteCodeLine($"{CSharpHelper.ConvertVisibility(classNode.Visibility)}{partialDefinition} class {classNode.Name}{baseDeclaration}");
             using (var interScope = stream.CreateIndentScope())
             {
-                foreach (var attr in classNode.Attributes)
+
+                if (classNode.Attributes != null)
                 {
-                    WriteAttributeAsProperty(stream, attr);
+                    foreach (var attr in classNode.Attributes)
+                    {
+                        WriteAttributeAsProperty(stream, attr);
+                    }
                 }
             }
         }

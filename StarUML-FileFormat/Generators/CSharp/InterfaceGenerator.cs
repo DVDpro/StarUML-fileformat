@@ -16,9 +16,12 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
             stream.WriteCodeLine($"{CSharpHelper.ConvertVisibility(interfaceNode.Visibility)} interface {interfaceNode.Name}{baseDeclaration}");
             using (var interScope = stream.CreateIndentScope())
             {
-                foreach (var attr in interfaceNode.Attributes)
+                if (interfaceNode.Attributes != null)
                 {
-                    WriteAttributeAsProperty(stream, attr);
+                    foreach (var attr in interfaceNode.Attributes)
+                    {
+                        WriteAttributeAsProperty(stream, attr);
+                    }
                 }
             }
         }
