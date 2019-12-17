@@ -18,9 +18,10 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
             {
                 if (interfaceNode.Attributes != null)
                 {
-                    foreach (var attr in interfaceNode.Attributes)
+                    for (var attrIndex = 0; attrIndex < interfaceNode.Attributes.Count; attrIndex++)
                     {
-                        WriteAttributeAsProperty(stream, attr);
+                        if (attrIndex > 0) stream.WriteLine();
+                        WriteAttributeAsProperty(stream, interfaceNode.Attributes[attrIndex]);
                     }
                 }
             }

@@ -19,10 +19,24 @@ namespace DVDpro.StarUML.FileFormat.Generators.CSharp
         internal void GenerateForClass(CSharpWriter stream, UmlAttributeNode attributeNode)
         {
             stream.WriteSummary(attributeNode.Documentation);
+            var visibility = CSharpHelper.ConvertVisibility(attributeNode.Visibility, true, true);
+            var attrType = CSharpHelper.ResolveType(attributeNode);
             if (attributeNode.IsReadOnly)
-                stream.WriteCodeLine($"{CSharpHelper.ConvertVisibility(attributeNode.Visibility, true, true)} {CSharpHelper.ResolveType(attributeNode)} {attributeNode.Name} {{ get; }}");
+                stream.WriteCodeLine($"{visibility} {attrType} {attributeNode.Name} {{ get; private set; }}");
             else
-                stream.WriteCodeLine($"{CSharpHelper.ConvertVisibility(attributeNode.Visibility, true, true)} {CSharpHelper.ResolveType(attributeNode)} {attributeNode.Name} {{ get; set; }}");
+                stream.WriteCodeLine($"{visibility} {attrType} {attributeNode.Name} {{ get; set; }}");
+        }
+
+        internal void GenerateForClass(CSharpWriter stream, UmlAssociationEndNode associationEndNode)
+        {
+            stream.WriteSummary(associationEndNode.Documentation);
+            var visibility = CSharpHelper.ConvertVisibility(associationEndNode.Visibility, true, true);
+            var opositeType = CSharpHelper.ResolveType(associationEndNode.OpositeEnd);
+
+            if (associationEndNode.IsReadOnly)
+                stream.WriteCodeLine($"{visibility} IEnumerable<{opositeType}> {associationEndNode.Name} {{ get; private set; }}");
+            else
+                stream.WriteCodeLine($"{visibility} IEnumerable<{opositeType}> {associationEndNode.Name} {{ get; set; }}");
         }
     }
 }

@@ -61,11 +61,42 @@ namespace DVDpro.StarUML.FileFormat.Generators
             }
         }
 
+        internal static string ResolveType(UmlAssociationEndNode associationEndNode)
+        {
+            if (associationEndNode.Reference.IsNodeReference)
+            {
+                var sourceNamespaceParts = GetNamespaceForNode(associationEndNode.OpositeEnd.Reference.NodeReference);
+                var targetNamespaceParts = GetNamespaceForNode(associationEndNode.Reference.NodeReference);
+
+                if (sourceNamespaceParts.Count < targetNamespaceParts.Count)
+                {// some inner namespace
+                    targetNamespaceParts.RemoveRange(0, targetNamespaceParts.Count - sourceNamespaceParts.Count);
+                    return $"{string.Join(".", targetNamespaceParts)}.{associationEndNode.Reference.NodeReference.Name}";
+                }
+                else
+                {
+                    return associationEndNode.Reference.NodeReference.Name;
+                }
+            }
+            else
+                return associationEndNode.Reference.Name;
+        }
+
         internal static string ResolveType(UmlAttributeNode attributeNode)
         {
             if (attributeNode.Type.IsNodeReference)
             {
-                return attributeNode.Type.NodeReference.Name;
+                var sourceNamespaceParts = GetNamespaceForNode(attributeNode.Parent);
+                var targetNamespaceParts = GetNamespaceForNode(attributeNode.Type.NodeReference);
+                if (sourceNamespaceParts.Count < targetNamespaceParts.Count)
+                {// some inner namespace
+                    targetNamespaceParts.RemoveRange(0, targetNamespaceParts.Count - sourceNamespaceParts.Count);
+                    return $"{string.Join(".", targetNamespaceParts)}.{attributeNode.Type.NodeReference.Name}";
+                }
+                else
+                {
+                    return attributeNode.Type.NodeReference.Name;
+                }
             }
             else
             {

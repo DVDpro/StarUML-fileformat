@@ -7,6 +7,7 @@ using System.Text.Json;
 
 namespace DVDpro.StarUML.FileFormat.Nodes
 {
+    [System.Diagnostics.DebuggerDisplay("{Name} - {Id}")]
     public abstract class Node : INode
     {
         public string Id { get; set; }
