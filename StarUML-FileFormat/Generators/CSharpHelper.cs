@@ -21,8 +21,7 @@ namespace DVDpro.StarUML.FileFormat.Generators
                         nsParts.Insert(0, current.Name);
                         break;
                 }
-
-                current = node.Parent;
+                current = current.Parent;
             }
             while (current != null);
             return nsParts;
